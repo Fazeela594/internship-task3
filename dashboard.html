@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard – Hunar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F4F7F5;--card:#fff;--ink:#14201E;--mute:#5B6B67;--line:#D9E2DE;--deep:#0E3B3A;--deep2:#164F4D;--gold:#F2B632;--tint:#E7EFEB;--r:14px}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{font:400 1rem/1.6 "DM Sans",system-ui,sans-serif;background:var(--paper);color:var(--ink)}
+h1,h2,h3,.brand{font-family:"Bricolage Grotesque","DM Sans",sans-serif;line-height:1.12}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.wrap{width:min(1120px,100% - 2.5rem);margin-inline:auto}
+.btn{border:0;border-radius:10px;padding:.65rem 1.1rem;font-weight:700;cursor:pointer;transition:transform .15s,background .15s}
+.btn:active{transform:scale(.97)}
+.solid{background:var(--deep);color:#fff}.solid:hover{background:var(--deep2)}
+.ghost{background:transparent;border:1.5px solid var(--line)}.ghost:hover{border-color:var(--deep)}
+.accent{background:var(--gold);color:var(--ink)}.accent:hover{background:#ffc84a}
+.full{width:100%}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:20;background:rgba(244,247,245,.92);backdrop-filter:blur(8px);border-bottom:1px solid transparent;transition:border-color .2s}
+.nav.stuck{border-color:var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{display:flex;align-items:center;gap:.5rem;font-weight:800;font-size:1.35rem}
+.mark{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:var(--deep);color:var(--gold);font-size:1rem}
+.menu{display:flex;align-items:center;gap:1.6rem}
+.menu>a{font-weight:500;color:var(--mute);padding:.25rem 0;border-bottom:2px solid transparent}
+.menu>a:hover,.menu>a.active{color:var(--ink);border-color:var(--gold)}
+.auth{display:flex;gap:.5rem}
+.burger{display:none;background:none;border:0;padding:.5rem;cursor:pointer}
+.burger span{display:block;width:22px;height:2px;background:var(--ink);margin:5px 0;transition:.2s}
+
+/* hero */
+.hero{background:var(--deep);color:#fff;padding:4.5rem 0 4rem}
+.hero-in{display:grid;grid-template-columns:1.5fr 1fr;gap:3rem;align-items:center}
+h1{font-size:clamp(2.1rem,5vw,3.6rem);font-weight:800;letter-spacing:-.02em;max-width:15ch}
+.lead{margin:1.2rem 0 1.8rem;color:#C6DAD5;max-width:46ch;font-size:1.08rem}
+.tabs{display:flex;gap:.25rem}
+.tab{background:rgba(255,255,255,.08);border:0;color:#C6DAD5;padding:.55rem 1rem;border-radius:10px 10px 0 0;cursor:pointer;font-weight:500}
+.tab.on{background:#fff;color:var(--ink);font-weight:700}
+.search{display:flex;gap:.5rem;background:#fff;padding:.5rem;border-radius:0 12px 12px 12px;max-width:560px}
+.search input{flex:1;min-width:0;border:0;padding:.6rem .8rem;color:var(--ink);background:transparent;outline:0}
+.tags{margin-top:1rem;color:#9DBBB4;font-size:.92rem}
+.tags button{background:none;border:0;color:#fff;text-decoration:underline;text-underline-offset:3px;cursor:pointer;margin-left:.8rem}
+.stats{display:grid;gap:1rem}
+.stats div{background:var(--deep2);border-radius:var(--r);padding:1.1rem 1.4rem;display:flex;align-items:baseline;gap:.8rem}
+.stats b{font:800 2rem "Bricolage Grotesque",sans-serif;color:var(--gold);min-width:4.5ch}
+.stats span{color:#C6DAD5}
+
+/* sections */
+.sec{padding:4.5rem 0}.tint{background:var(--tint)}
+h2{font-size:clamp(1.6rem,3.2vw,2.2rem);font-weight:800;margin-bottom:1.6rem;letter-spacing:-.01em}
+.cats{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem}
+.cat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:1.3rem 1rem;text-align:left;cursor:pointer;transition:border-color .15s,transform .15s}
+.cat:hover{border-color:var(--deep);transform:translateY(-3px)}
+.cat i{font-style:normal;font-size:1.8rem;display:block;margin-bottom:.6rem}
+.cat b{display:block}.cat small{color:var(--mute)}
+.steps{list-style:none;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;counter-reset:s}
+.steps li{counter-increment:s;border-top:3px solid var(--deep);padding-top:1rem}
+.steps li::before{content:"Step " counter(s);font-weight:700;color:var(--deep2);font-size:.9rem}
+.steps h3{font-size:1.25rem;margin:.3rem 0 .5rem}.steps p{color:var(--mute)}
+
+/* freelancers */
+.row-h{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+select{background:#fff;border:1px solid var(--line);border-radius:10px;padding:.5rem .8rem;margin-bottom:1.6rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:.35rem .9rem;cursor:pointer;font-weight:500}
+.chip.on{background:var(--deep);border-color:var(--deep);color:#fff}
+.count{color:var(--mute);margin-bottom:1.2rem}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:1.3rem;display:flex;flex-direction:column;gap:.7rem;position:relative}
+.av{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font:800 1.1rem "Bricolage Grotesque";color:#fff}
+.card h3{font-size:1.1rem}.card .ti{color:var(--mute);font-size:.95rem;margin-top:-.4rem}
+.sk{display:flex;flex-wrap:wrap;gap:.35rem}.sk span{background:var(--tint);border-radius:6px;padding:.1rem .5rem;font-size:.82rem}
+.meta{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:.8rem;border-top:1px solid var(--line);font-size:.92rem}
+.meta b{font-size:1.05rem}
+.fav{position:absolute;top:1rem;right:1rem;background:none;border:0;font-size:1.3rem;cursor:pointer;color:#B5C3BF;transition:transform .2s}
+.fav.on{color:#D6453D;transform:scale(1.15)}
+.empty{grid-column:1/-1;background:#fff;border:1px dashed var(--line);border-radius:var(--r);padding:2rem;text-align:center;color:var(--mute)}
+.empty button{margin-top:.8rem}
+
+.cta{display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap}
+.cta h2{margin-bottom:.4rem}.cta p{color:var(--mute)}
+.about p{max-width:62ch;color:var(--mute);font-size:1.1rem}
+
+/* footer */
+.foot{background:var(--ink);color:#B5C3BF;padding:3rem 0 1.5rem}
+.foot-in{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2rem}
+.foot h4{color:#fff;margin-bottom:.6rem}.foot a:not(.brand){display:block;padding:.15rem 0}.foot a:hover{color:var(--gold)}
+.brand.light{color:#fff;margin-bottom:.6rem}
+.copy{width:min(1120px,100% - 2.5rem);margin:2rem auto 0;padding-top:1rem;border-top:1px solid #2A3A37;font-size:.88rem}
+
+/* modal + toast */
+.modal{position:fixed;inset:0;background:rgba(10,25,24,.6);display:grid;place-items:center;z-index:50;padding:1rem}
+.modal[hidden]{display:none}
+.box{background:#fff;border-radius:var(--r);padding:1.8rem;width:min(400px,100%);position:relative;animation:pop .2s}
+@keyframes pop{from{transform:scale(.96);opacity:0}}
+.box h3{font-size:1.5rem;margin-bottom:1rem}
+.x{position:absolute;top:.6rem;right:.9rem;background:none;border:0;font-size:1.6rem;cursor:pointer}
+label{display:block;font-weight:500;margin-bottom:.8rem}
+label input{display:block;width:100%;margin-top:.25rem;padding:.6rem .75rem;border:1.5px solid var(--line);border-radius:10px}
+label input:invalid:not(:placeholder-shown){border-color:#D6453D}
+.err{color:#B3261E;min-height:1.4rem;font-size:.92rem}
+.swap{margin-top:1rem;text-align:center;color:var(--mute)}
+.swap button{background:none;border:0;color:var(--deep);font-weight:700;cursor:pointer;text-decoration:underline}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translate(-50%,150%);background:var(--ink);color:#fff;padding:.7rem 1.2rem;border-radius:10px;transition:transform .3s;z-index:60}
+.toast.show{transform:translate(-50%,0)}
+
+/* tablet */
+@media(max-width:960px){
+  .hero-in{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}
+  .stats div{flex-direction:column;gap:0}
+  .cats{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:repeat(2,1fr)}
+}
+/* mobile */
+@media(max-width:700px){
+  .burger{display:block}
+  .menu{position:absolute;top:64px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:var(--paper);border-bottom:1px solid var(--line);padding:.5rem 1.25rem 1.2rem;display:none}
+  .menu.open{display:flex}.menu>a{padding:.8rem 0}.auth{margin-top:.6rem}.auth .btn{flex:1}
+  .burger[aria-expanded=true] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .burger[aria-expanded=true] span:nth-child(2){opacity:0}
+  .burger[aria-expanded=true] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  .hero{padding:3rem 0}.stats{grid-template-columns:1fr}.stats div{flex-direction:row;gap:.8rem}
+  .cats{grid-template-columns:repeat(2,1fr)}.steps{grid-template-columns:1fr}.grid{grid-template-columns:1fr}
+  .foot-in{grid-template-columns:1fr}.search{flex-direction:column;border-radius:0 12px 12px 12px}
+  .sec{padding:3.2rem 0}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Week 2 additions. Works together with style.css from Week 1. */
+a.btn{display:block;text-align:center}
+.empty .btn{display:inline-block;margin-top:.8rem}
+.phead{background:var(--deep);color:#fff;padding:3rem 0 2.6rem}
+.phead h1{font-size:clamp(1.8rem,4vw,2.6rem);max-width:none;margin-bottom:.5rem}
+.phead p{color:#C6DAD5;margin-bottom:1.3rem}
+.bar{display:flex;flex-wrap:wrap;gap:1rem 1.5rem;align-items:flex-end;margin:1rem 0}
+.bar label{margin:0;min-width:160px;font-size:.92rem;color:var(--mute)}
+.bar label b{color:var(--ink)}
+.bar input[type=range]{padding:0;border:0;margin-top:.6rem;accent-color:var(--deep);cursor:pointer}
+.bar select{display:block;margin:.25rem 0 0;min-width:170px}
+
+.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem}
+.fcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;position:relative;display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s}
+.fcard:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(14,59,58,.12)}
+.ph{display:block;aspect-ratio:4/3;background:var(--tint)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.fcard .fav{top:.7rem;right:.7rem;background:#fff;border-radius:50%;width:36px;height:36px;padding:0;display:grid;place-items:center;font-size:1.1rem}
+.fb{padding:1rem;display:flex;flex-direction:column;gap:.55rem;flex:1}
+.who{display:flex;justify-content:space-between;gap:.5rem;font-size:.9rem}.who span{color:var(--mute)}
+.fb h3{font-size:1.02rem;line-height:1.3}.fb h3 a:hover{text-decoration:underline}
+.cat-tag{align-self:flex-start;background:var(--tint);border-radius:6px;padding:.1rem .5rem;font-size:.8rem}
+.fb .meta{margin-top:auto}
+
+.skel{border-radius:var(--r);background:linear-gradient(90deg,#E3EBE7 25%,#F1F5F3 50%,#E3EBE7 75%);background-size:200% 100%;animation:sh 1.2s infinite}
+.s-card{height:340px}.s-line{margin-bottom:14px}
+@keyframes sh{to{background-position:-200% 0}}
+
+.back{display:inline-block;margin-bottom:1.2rem;color:var(--mute);font-weight:500}.back:hover{color:var(--ink)}
+.pgrid{display:grid;grid-template-columns:1fr 340px;gap:2rem;align-items:start}
+.phd{display:flex;gap:1.2rem;align-items:center;margin-bottom:1.5rem}
+.pav{width:96px;height:96px;border-radius:50%;object-fit:cover;flex:none}
+.phd h1{font-size:1.9rem;max-width:none}.phd p{color:var(--mute)}
+.ptabs{display:flex;gap:.3rem;border-bottom:1px solid var(--line);margin-bottom:1.2rem}
+.ptab{background:none;border:0;padding:.7rem 1rem;cursor:pointer;font-weight:500;color:var(--mute);border-bottom:3px solid transparent}
+.ptab.on{color:var(--ink);border-color:var(--gold);font-weight:700}
+.pbody h3{margin:1.2rem 0 .4rem;font-size:1.1rem}.pbody p{color:var(--mute)}
+.rv{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:1rem;margin-bottom:.8rem}
+.rv b{margin-right:.6rem}.rv .st{color:#E0A100}
+.order{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:1.3rem;position:sticky;top:84px}
+.pk{display:flex;gap:.3rem;background:var(--tint);padding:.25rem;border-radius:10px;margin-bottom:1rem}
+.pkb{flex:1;border:0;background:none;padding:.5rem;border-radius:8px;cursor:pointer;font-weight:500}
+.pkb.on{background:#fff;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.pp{font:800 2rem "Bricolage Grotesque",sans-serif}
+.order ul{list-style:none;padding:0;margin:.8rem 0 1.2rem;color:var(--mute)}
+.order li::before{content:"✓ ";color:var(--deep2);font-weight:700}
+.order .btn+.btn{margin-top:.6rem}
+.savebtn.on{border-color:#D6453D;color:#D6453D}
+.ok{text-align:center;padding:1rem 0}
+.ok i{font-style:normal;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--deep);color:var(--gold);font-size:1.5rem;margin:0 auto .8rem}
+.rel{margin-top:3.5rem}
+
+@media(max-width:1100px){.mgrid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:960px){.mgrid{grid-template-columns:repeat(2,1fr)}.pgrid{grid-template-columns:1fr}.order{position:static}}
+@media(max-width:700px){.mgrid{grid-template-columns:1fr}.phd{flex-direction:column;align-items:flex-start}.bar label,.bar select{width:100%}}
+
+/* Week 3 additions: dashboard, forms, uploads. Works with style.css and market.css */
+.dash{display:grid;grid-template-columns:230px 1fr;gap:2rem;align-items:start}
+.side{position:sticky;top:84px;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:1.1rem}
+.me{display:flex;align-items:center;gap:.7rem;padding-bottom:1rem;margin-bottom:.8rem;border-bottom:1px solid var(--line)}
+.me img{width:48px;height:48px;border-radius:50%;object-fit:cover}.me b{display:block;line-height:1.2}.me small{color:var(--mute)}
+.snav{display:grid;gap:.2rem}
+.snav a{padding:.6rem .8rem;border-radius:10px;font-weight:500;color:var(--mute)}
+.snav a:hover{background:var(--tint)}.snav a.on{background:var(--deep);color:#fff}
+.vt{font-size:1.7rem;max-width:none;margin-bottom:1.2rem}
+.mute{color:var(--mute)}
+.dcard{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:1.3rem;margin-bottom:1rem}
+.dcard h3{margin-bottom:.6rem}.dcard p{color:var(--mute)}
+.pcard{display:flex;gap:1.4rem;align-items:center;flex-wrap:wrap;background:var(--deep);color:#fff;border-radius:var(--r);padding:1.6rem;margin-bottom:1rem}
+.pcard .pav{width:110px;height:110px;border:3px solid var(--gold)}
+.pinfo{flex:1;min-width:200px}.pinfo h1{font-size:1.8rem;max-width:none}.pt{color:var(--gold);font-weight:700}.pm{color:#C6DAD5}
+.pact{display:flex;gap:.6rem;flex-wrap:wrap}.pcard .ghost{border-color:#3C6B68;color:#fff}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem}
+.stats3 div{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:1rem;text-align:center}
+.stats3 b{display:block;font:800 1.7rem "Bricolage Grotesque",sans-serif;color:var(--deep)}.stats3 span{color:var(--mute);font-size:.9rem}
+.exp{padding:.6rem 0;border-top:1px solid var(--line)}.exp:first-of-type{border:0}.exp b{display:block}.exp span{color:var(--mute);font-size:.92rem}
+.sgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem}
+.acts{display:flex;gap:.4rem;margin-top:.4rem}.acts .btn{flex:1;padding:.5rem .4rem;font-size:.9rem}
+.del:hover{border-color:#D6453D;color:#D6453D}.danger{background:#C0392B}.danger:hover{background:#A93226}
+
+.dform{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:1.5rem;display:grid;gap:1.2rem}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.fld label{display:block;font-weight:500;margin-bottom:.35rem}
+.fld input,.fld select,.fld textarea{width:100%;margin:0;padding:.65rem .8rem;border:1.5px solid var(--line);border-radius:10px;background:#fff;font:inherit}
+.fld input:focus,.fld select:focus,.fld textarea:focus,.tagbox:focus-within{outline:0;border-color:var(--deep);box-shadow:0 0 0 3px rgba(242,182,50,.35)}
+.fld.bad input,.fld.bad select,.fld.bad textarea,.fld.bad .tagbox,.fld.bad .drop{border-color:#D6453D}
+.fld small{display:block;margin-top:.3rem;font-size:.85rem}.hint{color:var(--mute);text-align:right}.err{color:#B3261E}
+.tagbox{display:flex;flex-wrap:wrap;gap:.4rem;border:1.5px solid var(--line);border-radius:10px;padding:.4rem;background:#fff;cursor:text}
+.tagbox input{flex:1;min-width:140px;width:auto;border:0!important;padding:.3rem!important;box-shadow:none!important}
+.tg{display:inline-flex;align-items:center;gap:.3rem;background:var(--tint);border-radius:6px;padding:.15rem .3rem .15rem .6rem;font-size:.88rem}
+.tg button{border:0;background:none;cursor:pointer;font-size:1rem;color:var(--mute)}
+.drop{border:2px dashed var(--line);border-radius:var(--r);padding:1.2rem;text-align:center;cursor:pointer;background:var(--paper);transition:border-color .15s,background .15s}
+.drop:hover,.drop.over{border-color:var(--deep);background:var(--tint)}.drop.busy{opacity:.5;pointer-events:none}
+.dtxt b{display:block;margin-bottom:.2rem}.dtxt span{color:var(--mute);font-size:.9rem}
+.pre{max-width:100%;max-height:220px;border-radius:10px;display:block;margin:0 auto .7rem;object-fit:cover}
+.drop.sm .pre{width:120px;height:120px;border-radius:50%}
+.dacts{display:flex;gap:.5rem;justify-content:center}.dacts .btn{padding:.4rem .9rem;font-size:.9rem;display:inline-block}
+.erow{display:grid;grid-template-columns:1.2fr 1.2fr 1fr auto;gap:.5rem;margin-bottom:.6rem}
+.erow button{border:0;background:none;color:#B3261E;cursor:pointer}
+#addExp{display:inline-block}
+.dact{display:flex;gap:.7rem;flex-wrap:wrap}.dact .btn{display:inline-block}
+.cgrid{display:grid;grid-template-columns:1fr 300px;gap:1.5rem;align-items:start}
+.prev{position:sticky;top:84px;pointer-events:none}.prev h4{margin-bottom:.6rem;color:var(--mute)}
+.shero{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r);margin-bottom:1rem}
+.stitle{font-size:1.7rem;max-width:none;margin:.6rem 0}
+.owner{display:flex;gap:.8rem;align-items:center;margin:1rem 0;padding:1rem;background:#fff;border:1px solid var(--line);border-radius:var(--r)}
+.owner p{color:var(--mute);font-size:.92rem}.owner a{margin-left:auto;font-weight:700;color:var(--deep)}
+.pav.sm{width:52px;height:52px}.sdesc{white-space:pre-line}
+
+@media(max-width:960px){
+  .dash{grid-template-columns:1fr}.side{position:static}.me{display:none}
+  .snav{display:flex;overflow-x:auto}.snav a{white-space:nowrap}
+  .cgrid{grid-template-columns:1fr}.prev{position:static}
+}
+@media(max-width:700px){
+  .fgrid,.sgrid,.stats3{grid-template-columns:1fr}.erow{grid-template-columns:1fr}
+  .pcard{flex-direction:column;align-items:flex-start}
+}
+
+</style></head><body>
+<header class="nav" id="nav"><div class="wrap nav-in"><a href="index.html" class="brand"><span class="mark">H</span>Hunar</a>
+<button class="burger" id="burger" aria-label="Toggle menu" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span></button>
+<nav class="menu" id="menu"><a href="index.html">Home</a><a href="freelancers.html">Find Freelancers</a><a href="index.html#jobs">Find Jobs</a><a href="index.html#about">About</a>
+<div class="auth"></div></nav></div></header>
+<main class="sec"><div class="wrap dash">
+<aside class="side"><div class="me" id="me"></div>
+<nav class="snav" aria-label="Dashboard"><a href="#profile" data-v="profile">👤 Profile</a><a href="#edit" data-v="edit">✏️ Edit Profile</a><a href="#services" data-v="services">📦 My Services</a><a href="#create" data-v="create">➕ Create Service</a></nav></aside>
+<section id="main" aria-live="polite"></section></div></main>
+<footer class="foot"><div class="wrap foot-in">
+<div><a href="index.html" class="brand light"><span class="mark">H</span>Hunar</a><p>Skilled freelancers, fairly paid.</p></div>
+<div><h4>Platform</h4><a href="freelancers.html">Find Freelancers</a><a href="dashboard.html">Dashboard</a></div>
+<div><h4>Company</h4><a href="index.html#about">About</a><a href="#">Contact</a></div></div>
+<p class="copy">© 2026 Hunar. Student project.</p></footer>
+<div class="toast" id="toast" role="status"></div>
+<div class="modal" id="cm" hidden><div class="box" role="dialog" aria-modal="true" aria-labelledby="cmh"><h3 id="cmh">Delete this service?</h3><p id="cmt" class="mute"></p>
+<div class="dact" style="margin-top:1.2rem"><button class="btn ghost" id="cmNo" type="button">Cancel</button><button class="btn solid danger" id="cmYes" type="button">Delete</button></div></div></div>
+<script>
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const CATS = ["Web Development", "Graphic Design", "Mobile App Development", "Data Analysis", "Digital Marketing"];
+
+/* Sample data. Add "img" (a photo URL) to any freelancer to replace the generated avatar. */
+const F = [
+  { id: 1, name: "Ayesha Khan", title: "I will build your React and Flask web app", cat: CATS[0], price: 40, rating: 4.9, reviews: 112, city: "Lahore", days: 5, skills: ["React", "Flask", "REST API"], about: "Full-stack developer who turns ideas into fast, clean web apps and keeps you updated at every step.", color: "#0E3B3A" },
+  { id: 2, name: "Zain Raza", title: "I will create a full-stack JavaScript website", cat: CATS[0], price: 55, rating: 4.8, reviews: 95, city: "Karachi", days: 7, skills: ["Node.js", "React", "MongoDB"], about: "I build complete websites with secure back ends, from simple business sites to custom dashboards.", color: "#1F6F4A" },
+  { id: 3, name: "Bilal Ahmed", title: "I will design a professional logo and brand identity", cat: CATS[1], price: 15, rating: 4.8, reviews: 203, city: "Faisalabad", days: 3, skills: ["Logo", "Branding", "Figma"], about: "Brand designer with 200+ happy clients. You get clean, memorable logos with all source files.", color: "#8A5A00" },
+  { id: 4, name: "Maryam Iqbal", title: "I will design modern UI/UX screens and posters", cat: CATS[1], price: 25, rating: 4.9, reviews: 120, city: "Islamabad", days: 4, skills: ["UI/UX", "Poster", "Illustrator"], about: "I design app screens and print-ready posters that look polished and are easy to use.", color: "#A03F74" },
+  { id: 5, name: "Sana Malik", title: "I will develop your Flutter mobile app", cat: CATS[2], price: 50, rating: 4.9, reviews: 87, city: "Multan", days: 10, skills: ["Flutter", "Firebase", "Android"], about: "Flutter developer building smooth Android and iOS apps with clean, maintainable code.", color: "#2F5D9E" },
+  { id: 6, name: "Hamza Ali", title: "I will build an Android app using Java", cat: CATS[2], price: 35, rating: 4.5, reviews: 58, city: "Layyah", days: 8, skills: ["Java", "Android Studio", "SQLite"], about: "I create reliable native Android apps for small businesses, students and startups.", color: "#3A4A55" },
+  { id: 7, name: "Usman Tariq", title: "I will create Power BI dashboards from your data", cat: CATS[3], price: 30, rating: 4.7, reviews: 64, city: "Lahore", days: 4, skills: ["Power BI", "SQL", "Python"], about: "Data analyst who turns messy numbers into clear dashboards that help you decide faster.", color: "#6B3FA0" },
+  { id: 8, name: "Noor Fatima", title: "I will clean and analyze your data in Excel and Python", cat: CATS[3], price: 20, rating: 4.6, reviews: 77, city: "Rawalpindi", days: 3, skills: ["Excel", "Python", "Pandas"], about: "I clean, organise and analyse datasets, and explain the findings in simple language.", color: "#B0612B" },
+  { id: 9, name: "Hira Noor", title: "I will do SEO and content marketing for your website", cat: CATS[4], price: 20, rating: 4.6, reviews: 141, city: "Sialkot", days: 6, skills: ["SEO", "Content", "Copywriting"], about: "I help small websites rank higher with practical SEO and content that people want to read.", color: "#B3402E" },
+  { id: 10, name: "Daniyal Shah", title: "I will manage your social media ad campaigns", cat: CATS[4], price: 12, rating: 4.4, reviews: 49, city: "Peshawar", days: 2, skills: ["Meta Ads", "Social Media", "Analytics"], about: "I plan and run social media ads on a small budget and report the results every week.", color: "#2D6A8A" }
+];
+const POOL = [["Ali R.", "Delivered earlier than promised and the quality was excellent."], ["Sara M.", "Very professional. Understood my requirements right away."], ["Omar K.", "Great communication and a fair price. Would hire again."], ["Hina T.", "Patient with my revisions and the final result looked perfect."], ["Daniel P.", "Exactly what I asked for, done neatly."]];
+const reviewsOf = f => [0, 1, 2].map(i => ({ who: POOL[(f.id + i) % 5][0], text: POOL[(f.id + i) % 5][1], stars: f.rating >= 4.7 ? 5 : 4 }));
+
+function avatar(f) {
+  if (f.img) return f.img;
+  const ini = f.name.split(" ").map(w => w[0]).join("");
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${f.color}"/><stop offset="1" stop-color="#0E3B3A"/></linearGradient></defs><rect width="400" height="300" fill="url(#g)"/><text x="50%" y="52%" font-family="Arial,sans-serif" font-size="110" font-weight="700" fill="#fff" text-anchor="middle" dominant-baseline="middle">${ini}</text></svg>`;
+  return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+}
+
+/* saved freelancers (kept in this browser) */
+const favs = {
+  get() { try { return new Set(JSON.parse(localStorage.getItem("hunar_favs") || "[]")); } catch { return new Set(); } },
+  toggle(id) {
+    id = +id; const s = this.get(); s.has(id) ? s.delete(id) : s.add(id);
+    try { localStorage.setItem("hunar_favs", JSON.stringify([...s])); } catch {}
+    return s.has(id);
+  }
+};
+
+/* reusable freelancer card */
+function card(f) {
+  const on = favs.get().has(f.id), url = "profile.html?id=" + f.id;
+  return `<article class="fcard">
+    <a href="${url}" class="ph"><img src="${avatar(f)}" alt="${f.name}" loading="lazy"></a>
+    <button class="fav${on ? " on" : ""}" data-fav="${f.id}" aria-pressed="${on}" aria-label="Save ${f.name}">${on ? "♥" : "♡"}</button>
+    <div class="fb">
+      <div class="who"><b>${f.name}</b><span>${f.city}</span></div>
+      <h3><a href="${url}">${f.title}</a></h3>
+      <span class="cat-tag">${f.cat}</span>
+      <div class="meta"><span>★ ${f.rating} <small>(${f.reviews})</small></span><span>From <b>$${f.price}</b></span></div>
+      <a class="btn solid full" href="${url}">View Profile</a>
+    </div></article>`;
+}
+
+/* toast */
+let tt;
+function toast(msg) {
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+/* shared behaviour: save button, nav */
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-fav]");
+  if (b) {
+    const on = favs.toggle(b.dataset.fav);
+    b.classList.toggle("on", on); b.setAttribute("aria-pressed", on);
+    b.textContent = b.classList.contains("fav") ? (on ? "♥" : "♡") : (on ? "♥ Saved" : "♡ Save");
+    toast(on ? "Saved to your list" : "Removed from your list");
+  }
+  if (e.target.closest("[data-soon]")) toast("Login and Register are on the Home page for now");
+});
+const burger = $("#burger"), menu = $("#menu");
+burger.addEventListener("click", () => { const o = menu.classList.toggle("open"); burger.setAttribute("aria-expanded", o); });
+addEventListener("scroll", () => $("#nav").classList.toggle("stuck", scrollY > 8), { passive: true });
+
+/* ===== Week 3: accounts, profile and services (saved in this browser) ===== */
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("hunar_" + k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem("hunar_" + k, JSON.stringify(v)); return true; } catch { return false; } }
+};
+const DEFAULT_USER = {
+  name: "Your Name", title: "Freelance Web Developer", city: "Lahore", email: "",
+  bio: "I build clean, responsive websites with HTML, CSS and JavaScript. Edit this section to tell clients about yourself.",
+  skills: ["HTML", "CSS", "JavaScript"], exp: [{ role: "Web Development Intern", company: "Your Company", years: "2026" }],
+  photo: "", rating: 4.8, reviews: 12
+};
+const SEED_SERVICES = [
+  { id: "s1", title: "I will build a responsive website using HTML, CSS and JavaScript", cat: CATS[0], desc: "A clean, mobile-friendly website for your business or portfolio. Includes a home page, an about section, a contact form and basic animations.", price: 30, days: 5, tags: ["HTML", "CSS", "JavaScript"], img: "" },
+  { id: "s2", title: "I will design a modern landing page for your product", cat: CATS[1], desc: "A polished landing page layout with clear sections, strong headings and a call-to-action. Delivered as ready-to-use HTML and CSS.", price: 20, days: 3, tags: ["Landing page", "UI", "Figma"], img: "" }
+];
+const getUser = () => ({ ...DEFAULT_USER, ...store.get("user", {}) });
+const getServices = () => store.get("services", SEED_SERVICES);
+const saveServices = a => store.set("services", a);
+const photo = u => u.photo || avatar({ name: u.name, color: "#0E3B3A" });
+const simg = s => s.img || avatar({ name: s.cat, color: "#164F4D" });
+
+/* nav: replace Login/Register with account links */
+const authBox = $(".auth");
+if (authBox) authBox.innerHTML = '<a class="btn ghost" href="dashboard.html#create">+ Create Service</a><a class="btn solid" href="dashboard.html#profile">My Account</a>';
+
+</script>
+<script>
+const main = $("#main");
+const views = { profile: viewProfile, edit: viewEdit, services: viewServices, create: viewCreate };
+
+/* ---------- helpers: validation, tags, image upload ---------- */
+function setErr(id, m) { const f = $("#" + id).closest(".fld"); f.classList.toggle("bad", !!m); f.querySelector(".err").textContent = m || ""; return !m; }
+function bind(form, rules) {
+  form.addEventListener("focusout", e => { const r = rules[e.target.id]; if (r) setErr(e.target.id, r(e.target.value.trim())); });
+  form.addEventListener("input", e => { const r = rules[e.target.id]; if (r && e.target.closest(".fld").classList.contains("bad")) setErr(e.target.id, r(e.target.value.trim())); });
+}
+const check = rules => Object.keys(rules).map(k => setErr(k, rules[k]($("#" + k).value.trim()))).every(Boolean);
+
+function readImage(file, max, cb) {
+  const r = new FileReader();
+  r.onload = () => {
+    const im = new Image();
+    im.onload = () => {
+      const k = Math.min(1, max / Math.max(im.width, im.height)), c = document.createElement("canvas");
+      c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+      c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+      cb(c.toDataURL("image/jpeg", 0.82));
+    };
+    im.onerror = () => cb(null); im.src = r.result;
+  };
+  r.onerror = () => cb(null); r.readAsDataURL(file);
+}
+function makeDrop(el, max, label, init, onChange) {
+  let img = init || "";
+  const draw = () => {
+    el.innerHTML = '<input type="file" accept="image/*" hidden>' + (img
+      ? `<img class="pre" src="${img}" alt="Preview"><div class="dacts"><button type="button" class="btn ghost" data-a="pick">Change</button><button type="button" class="btn ghost" data-a="rm">Remove</button></div>`
+      : `<div class="dtxt"><b>📷 ${label}</b><span>Click or drag an image here. JPG or PNG, up to 3 MB.</span></div>`);
+  };
+  const take = f => {
+    if (!f) return;
+    if (!/^image\//.test(f.type)) return setErr(el.id, "Please choose an image file.");
+    if (f.size > 3145728) return setErr(el.id, "This image is larger than 3 MB.");
+    setErr(el.id, ""); el.classList.add("busy");
+    readImage(f, max, d => {
+      el.classList.remove("busy");
+      if (!d) return setErr(el.id, "This image could not be read.");
+      img = d; draw(); onChange(img);
+    });
+  };
+  el.addEventListener("click", e => {
+    const a = e.target.closest("[data-a]");
+    if (a && a.dataset.a === "rm") { img = ""; draw(); onChange(""); return; }
+    if (e.target.type !== "file") el.querySelector("input").click();
+  });
+  el.addEventListener("change", e => take(e.target.files[0]));
+  el.addEventListener("dragover", e => { e.preventDefault(); el.classList.add("over"); });
+  el.addEventListener("dragleave", () => el.classList.remove("over"));
+  el.addEventListener("drop", e => { e.preventDefault(); el.classList.remove("over"); take(e.dataTransfer.files[0]); });
+  el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); el.querySelector("input").click(); } });
+  draw();
+}
+function tagBox(box, list, max) {
+  const draw = () => {
+    box.innerHTML = list.map((t, i) => `<span class="tg">${esc(t)}<button type="button" data-i="${i}" aria-label="Remove ${esc(t)}">×</button></span>`).join("") + '<input aria-label="Add a tag" placeholder="Type and press Enter">';
+  };
+  const add = (v, focus) => {
+    v = v.trim().replace(/,$/, "").trim().slice(0, 24);
+    if (!v) return;
+    if (list.length >= max) return toast(`You can add up to ${max}`);
+    if (!list.some(x => x.toLowerCase() === v.toLowerCase())) list.push(v);
+    draw(); if (focus) box.querySelector("input").focus();
+    box.dispatchEvent(new Event("change", { bubbles: true }));
+  };
+  box.addEventListener("keydown", e => {
+    if (e.target.tagName !== "INPUT") return;
+    if (e.key === "Enter" || e.key === ",") { e.preventDefault(); add(e.target.value, true); }
+    else if (e.key === "Backspace" && !e.target.value && list.length) { list.pop(); draw(); box.querySelector("input").focus(); box.dispatchEvent(new Event("change", { bubbles: true })); }
+  });
+  box.addEventListener("click", e => {
+    const b = e.target.closest("button");
+    if (b) { list.splice(+b.dataset.i, 1); draw(); box.dispatchEvent(new Event("change", { bubbles: true })); }
+    box.querySelector("input").focus();
+  });
+  box.addEventListener("focusout", e => { if (e.target.tagName === "INPUT" && e.target.value.trim()) add(e.target.value, false); });
+  draw();
+}
+
+/* service card (used in profile, My Services and live preview) */
+const scard = (s, act) => `<article class="fcard">
+  <a href="service.html?id=${s.id}" class="ph"><img src="${simg(s)}" alt=""></a>
+  <div class="fb"><span class="cat-tag">${esc(s.cat) || "Category"}</span>
+  <h3><a href="service.html?id=${s.id}">${esc(s.title)}</a></h3>
+  <div class="meta"><span>${s.days} day${s.days > 1 ? "s" : ""}</span><span>From <b>$${esc(s.price)}</b></span></div>
+  ${act ? `<div class="acts"><a class="btn ghost" href="service.html?id=${s.id}">View</a><a class="btn ghost" href="#create/${s.id}">Edit</a><button class="btn ghost del" data-del="${s.id}">Delete</button></div>` : ""}
+  </div></article>`;
+
+/* ---------- view 1: profile (freelancer profile layout) ---------- */
+function viewProfile() {
+  const u = getUser(), sv = getServices(), from = sv.length ? Math.min(...sv.map(s => s.price)) : null;
+  main.innerHTML = `
+  <section class="pcard"><img class="pav" src="${photo(u)}" alt="${esc(u.name)}">
+    <div class="pinfo"><h1>${esc(u.name)}</h1><p class="pt">${esc(u.title)}</p><p class="pm">★ ${u.rating} (${u.reviews} sample reviews) · ${esc(u.city)}</p></div>
+    <div class="pact"><a class="btn ghost" href="#edit">Edit Profile</a><a class="btn accent" href="#create">+ Create Service</a></div></section>
+  <div class="stats3"><div><b>${sv.length}</b><span>Services</span></div><div><b>${u.rating}</b><span>Rating</span></div><div><b>${from !== null ? "$" + from : "–"}</b><span>Starting price</span></div></div>
+  <div class="dcard"><h3>About</h3><p>${esc(u.bio)}</p></div>
+  <div class="dcard"><h3>Skills</h3>${u.skills.length ? `<div class="sk">${u.skills.map(s => `<span>${esc(s)}</span>`).join("")}</div>` : '<p>No skills added yet.</p>'}</div>
+  <div class="dcard"><h3>Experience</h3>${u.exp.length ? u.exp.map(x => `<div class="exp"><b>${esc(x.role)}</b><span>${esc(x.company)}${x.years ? " · " + esc(x.years) : ""}</span></div>`).join("") : '<p>No experience added yet.</p>'}</div>
+  <div class="dcard"><div class="row-h"><h3>Services</h3><a href="#services">Manage</a></div>${sv.length ? `<div class="sgrid">${sv.map(s => scard(s)).join("")}</div>` : '<p>No services yet. <a href="#create"><b>Create one</b></a>.</p>'}</div>`;
+}
+
+/* ---------- view 2: edit profile ---------- */
+function viewEdit() {
+  const u = getUser(), skills = [...u.skills], exp = u.exp.map(x => ({ ...x }));
+  let photoData = u.photo || "";
+  main.innerHTML = `<h1 class="vt">Edit Profile</h1>
+  <form id="pf" class="dform" novalidate>
+    <div class="fld"><label>Profile picture</label><div class="drop sm" id="dropP" tabindex="0" role="button" aria-label="Upload profile picture"></div><small class="err"></small></div>
+    <div class="fgrid">
+      <div class="fld"><label for="name">Full name</label><input id="name" maxlength="40" autocomplete="name" value="${esc(u.name)}"><small class="err"></small></div>
+      <div class="fld"><label for="title">Professional title</label><input id="title" maxlength="60" value="${esc(u.title)}"><small class="err"></small></div>
+      <div class="fld"><label for="email">Email</label><input id="email" type="email" value="${esc(u.email)}"><small class="err"></small></div>
+      <div class="fld"><label for="city">City</label><input id="city" maxlength="40" value="${esc(u.city)}"><small class="err"></small></div>
+    </div>
+    <div class="fld"><label for="bio">About / Bio</label><textarea id="bio" rows="5" maxlength="400">${esc(u.bio)}</textarea><small class="hint" id="bioN"></small><small class="err"></small></div>
+    <div class="fld"><label>Skills (up to 10)</label><div class="tagbox" id="skills"></div><small class="err"></small></div>
+    <div class="fld"><label>Experience (up to 5)</label><div id="exps"></div><button type="button" class="btn ghost" id="addExp">+ Add experience</button><small class="err"></small></div>
+    <div class="dact"><button class="btn solid" type="submit">Save changes</button><a class="btn ghost" href="#profile">Cancel</a></div>
+  </form>`;
+  makeDrop($("#dropP"), 400, "Upload a profile picture", photoData, d => photoData = d);
+  tagBox($("#skills"), skills, 10);
+  const draw = () => $("#exps").innerHTML = exp.map((x, i) => `<div class="erow" data-i="${i}">
+    <input data-k="role" placeholder="Role" aria-label="Role" maxlength="50" value="${esc(x.role)}">
+    <input data-k="company" placeholder="Company" aria-label="Company" maxlength="50" value="${esc(x.company)}">
+    <input data-k="years" placeholder="Years, e.g. 2025" aria-label="Years" maxlength="20" value="${esc(x.years)}">
+    <button type="button" data-rx="${i}">Remove</button></div>`).join("");
+  draw();
+  $("#exps").addEventListener("input", e => { const r = e.target.closest(".erow"); if (r) exp[+r.dataset.i][e.target.dataset.k] = e.target.value; });
+  $("#exps").addEventListener("click", e => { const b = e.target.closest("[data-rx]"); if (b) { exp.splice(+b.dataset.rx, 1); draw(); } });
+  $("#addExp").addEventListener("click", () => exp.length < 5 ? (exp.push({ role: "", company: "", years: "" }), draw()) : toast("You can add up to 5 experiences"));
+
+  const rules = {
+    name: v => v.length < 3 ? "Enter your full name (at least 3 characters)." : /\d/.test(v) ? "Name cannot contain numbers." : "",
+    title: v => v.length < 3 ? "Enter your professional title." : "",
+    email: v => /^\S+@\S+\.\S+$/.test(v) ? "" : "Enter a valid email address.",
+    city: v => v ? "" : "Enter your city.",
+    bio: v => v.length < 30 ? `Write at least 30 characters (${v.length}/30).` : ""
+  };
+  bind($("#pf"), rules);
+  const cnt = () => $("#bioN").textContent = $("#bio").value.length + "/400";
+  cnt(); $("#bio").addEventListener("input", cnt);
+  $("#pf").addEventListener("submit", e => {
+    e.preventDefault();
+    const rows = exp.filter(x => x.role.trim() || x.company.trim() || x.years.trim());
+    const ok = [check(rules),
+      setErr("skills", skills.length ? "" : "Add at least one skill."),
+      setErr("exps", rows.some(x => !x.role.trim() || !x.company.trim()) ? "Each experience needs a role and a company. Fill it in or remove the row." : "")
+    ].every(Boolean);
+    if (!ok) { toast("Please fix the highlighted fields"); const f = $(".fld.bad"); if (f) f.querySelector("input,textarea")?.focus(); return; }
+    const v = id => $("#" + id).value.trim();
+    const saved = store.set("user", { ...u, name: v("name"), title: v("title"), email: v("email"), city: v("city"), bio: v("bio"), skills, photo: photoData,
+      exp: rows.map(x => ({ role: x.role.trim(), company: x.company.trim(), years: x.years.trim() })) });
+    if (!saved) return toast("Could not save. Try a smaller picture.");
+    toast("Profile updated"); location.hash = "#profile";
+  });
+}
+
+/* ---------- view 3: my services ---------- */
+function viewServices() {
+  const sv = getServices();
+  main.innerHTML = `<div class="row-h"><h1 class="vt">My Services</h1><a class="btn solid" href="#create">+ Create Service</a></div>` +
+    (sv.length ? `<p class="count">${sv.length} service${sv.length > 1 ? "s" : ""}</p><div class="sgrid">${sv.map(s => scard(s, true)).join("")}</div>`
+      : `<div class="empty"><p>You have not created any services yet.</p><a class="btn solid" href="#create">Create your first service</a></div>`);
+}
+
+/* ---------- view 4: create / edit service ---------- */
+function viewCreate(id) {
+  const all = getServices(), old = id ? all.find(s => s.id === id) : null;
+  if (id && !old) { main.innerHTML = '<div class="empty"><p>This service could not be found.</p><a class="btn solid" href="#services">Back to My Services</a></div>'; return; }
+  const tags = [...(old ? old.tags : [])]; let img = old ? old.img : "";
+  main.innerHTML = `<h1 class="vt">${old ? "Edit Service" : "Create a Service"}</h1>
+  <div class="cgrid"><form id="sf" class="dform" novalidate>
+    <div class="fld"><label>Service image (optional)</label><div class="drop" id="dropS" tabindex="0" role="button" aria-label="Upload service image"></div><small class="err"></small></div>
+    <div class="fld"><label for="stitle">Service title</label><input id="stitle" maxlength="80" placeholder="I will build a responsive website for you" value="${esc(old?.title)}"><small class="hint" id="tN"></small><small class="err"></small></div>
+    <div class="fgrid">
+      <div class="fld"><label for="cat">Category</label><select id="cat"><option value="">Choose a category</option>${CATS.map(c => `<option${old?.cat === c ? " selected" : ""}>${c}</option>`).join("")}</select><small class="err"></small></div>
+      <div class="fld"><label for="days">Delivery time</label><select id="days">${[1, 2, 3, 5, 7, 10, 14, 21, 30].map(d => `<option value="${d}"${(old?.days || 5) === d ? " selected" : ""}>${d} day${d > 1 ? "s" : ""}</option>`).join("")}</select><small class="err"></small></div>
+      <div class="fld"><label for="price">Price (USD)</label><input id="price" type="number" min="5" max="1000" step="1" placeholder="e.g. 25" value="${old?.price ?? ""}"><small class="err"></small></div>
+    </div>
+    <div class="fld"><label for="desc">Description</label><textarea id="desc" rows="6" maxlength="600" placeholder="Explain what you will deliver and how you work.">${esc(old?.desc)}</textarea><small class="hint" id="dN"></small><small class="err"></small></div>
+    <div class="fld"><label>Skills / tags (up to 8)</label><div class="tagbox" id="tags"></div><small class="err"></small></div>
+    <div class="dact"><button class="btn solid" id="sub" type="submit">${old ? "Save service" : "Publish service"}</button><a class="btn ghost" href="#services">Cancel</a></div>
+  </form><aside class="prev"><h4>Live preview</h4><div id="prev"></div></aside></div>`;
+  const v = k => $("#" + k).value.trim();
+  const preview = () => {
+    $("#tN").textContent = $("#stitle").value.length + "/80"; $("#dN").textContent = $("#desc").value.length + "/600";
+    $("#prev").innerHTML = scard({ id: "preview", title: v("stitle") || "Your service title will appear here", cat: v("cat"), price: v("price") || "0", days: +v("days"), img });
+  };
+  makeDrop($("#dropS"), 800, "Upload a service image", img, d => { img = d; preview(); });
+  tagBox($("#tags"), tags, 8);
+  const rules = {
+    stitle: s => s.length < 15 ? `Title needs at least 15 characters (${s.length}/15).` : "",
+    cat: s => s ? "" : "Choose a category.",
+    price: s => /^\d+$/.test(s) && s >= 5 && s <= 1000 ? "" : "Enter a whole number between 5 and 1000.",
+    desc: s => s.length < 50 ? `Description needs at least 50 characters (${s.length}/50).` : ""
+  };
+  bind($("#sf"), rules);
+  $("#sf").addEventListener("input", preview); $("#sf").addEventListener("change", preview); preview();
+  $("#sf").addEventListener("submit", e => {
+    e.preventDefault();
+    const ok = [check(rules), setErr("tags", tags.length ? "" : "Add at least one skill or tag.")].every(Boolean);
+    if (!ok) { toast("Please fix the highlighted fields"); const f = $(".fld.bad"); if (f) f.querySelector("input,textarea,select")?.focus(); return; }
+    const data = { title: v("stitle"), cat: v("cat"), desc: v("desc"), price: +v("price"), days: +v("days"), tags, img };
+    $("#sub").disabled = true; $("#sub").textContent = "Saving…";
+    setTimeout(() => {
+      const list = getServices();
+      if (old) list[list.findIndex(s => s.id === old.id)] = { ...old, ...data }; else list.unshift({ id: "s" + Date.now(), ...data });
+      if (!saveServices(list)) { $("#sub").disabled = false; $("#sub").textContent = "Try again"; return toast("Could not save. Try a smaller image."); }
+      toast(old ? "Service updated" : "Service published"); location.hash = "#services";
+    }, 700);
+  });
+}
+
+/* ---------- delete confirmation ---------- */
+let delId = null; const cm = $("#cm");
+document.addEventListener("click", e => {
+  const d = e.target.closest("[data-del]");
+  if (d) { delId = d.dataset.del; const s = getServices().find(x => x.id === delId); $("#cmt").textContent = `"${s ? s.title : "This service"}" will be removed permanently.`; cm.hidden = false; $("#cmNo").focus(); }
+  else if (e.target === cm || e.target.id === "cmNo") cm.hidden = true;
+  else if (e.target.id === "cmYes") { saveServices(getServices().filter(x => x.id !== delId)); cm.hidden = true; toast("Service deleted"); route(); }
+});
+addEventListener("keydown", e => { if (e.key === "Escape") cm.hidden = true; });
+
+/* ---------- router ---------- */
+function route() {
+  const [name, arg] = (location.hash.slice(1) || "profile").split("/");
+  const v = views[name] ? name : "profile", u = getUser();
+  $$(".snav a").forEach(a => a.classList.toggle("on", a.dataset.v === v));
+  $("#me").innerHTML = `<img src="${photo(u)}" alt=""><div><b>${esc(u.name)}</b><small>${esc(u.title)}</small></div>`;
+  views[v](arg); scrollTo(0, 0);
+}
+main.innerHTML = '<div class="skel s-line" style="height:150px"></div><div class="skel s-line" style="height:90px"></div><div class="skel s-line" style="height:220px"></div>';
+setTimeout(() => { route(); addEventListener("hashchange", route); }, 400);
+
+</script>
+</body></html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hunar – Hire skilled freelancers</title>
+<meta name="description" content="Hunar is a freelancing marketplace where you find trusted freelancers for web, design, mobile, data and marketing work.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a href="#home" class="brand"><span class="mark">H</span>Hunar</a>
+    <button class="burger" id="burger" aria-label="Toggle menu" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span></button>
+    <nav class="menu" id="menu">
+      <a href="#home" class="active">Home</a>
+      <a href="freelancers.html">Find Freelancers</a>
+      <a href="#jobs">Find Jobs</a>
+      <a href="#about">About</a>
+      <a href="dashboard.html">Dashboard</a>
+      <div class="auth">
+        <button class="btn ghost" data-auth="login">Login</button>
+        <button class="btn solid" data-auth="register">Register</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="home">
+  <section class="hero">
+    <div class="wrap hero-in">
+      <div>
+        <h1>Hire the right freelancer for the work in front of you.</h1>
+        <p class="lead">Browse verified developers, designers and analysts, compare their rates and reviews, and start a project the same day.</p>
+        <div class="tabs" role="tablist">
+          <button role="tab" class="tab on" data-mode="services">Search for services</button>
+          <button role="tab" class="tab" data-mode="freelancers">Search freelancers</button>
+        </div>
+        <form class="search" id="searchForm" role="search">
+          <input id="q" type="search" placeholder="Try “logo design” or “Flutter app”" aria-label="Search">
+          <button class="btn accent" type="submit">Search</button>
+        </form>
+        <p class="tags">Popular: <button data-q="React">React</button><button data-q="Logo">Logo</button><button data-q="Python">Python</button><button data-q="SEO">SEO</button></p>
+      </div>
+      <aside class="stats" aria-label="Platform numbers">
+        <div><b data-n="12400">0</b><span>freelancers</span></div>
+        <div><b data-n="38000">0</b><span>projects delivered</span></div>
+        <div><b data-n="4.8" data-d="1">0</b><span>average rating</span></div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="sec" id="categories">
+    <div class="wrap">
+      <h2>Popular categories</h2>
+      <div class="cats" id="cats"></div>
+    </div>
+  </section>
+
+  <section class="sec tint" id="how">
+    <div class="wrap">
+      <h2>How Hunar works</h2>
+      <ol class="steps">
+        <li><h3>Post a job or search</h3><p>Describe what you need, or browse freelancers by skill, rate and rating.</p></li>
+        <li><h3>Compare and chat</h3><p>Read reviews, view portfolios and message your shortlist before you commit.</p></li>
+        <li><h3>Pay when you approve</h3><p>Funds are held safely and released only after you accept the delivered work.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec" id="freelancers">
+    <div class="wrap">
+      <div class="row-h">
+        <h2>Featured freelancers</h2>
+        <select id="sort" aria-label="Sort freelancers">
+          <option value="rating">Top rated</option>
+          <option value="low">Lowest rate</option>
+          <option value="high">Highest rate</option>
+        </select>
+      </div>
+      <div class="chips" id="chips"></div>
+      <p class="count" id="count" aria-live="polite"></p>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <section class="sec tint" id="jobs">
+    <div class="wrap cta">
+      <div><h2>Looking for work instead?</h2><p>Create a profile, set your rate and apply to new jobs every day.</p></div>
+      <button class="btn solid" data-auth="register">Join as a freelancer</button>
+    </div>
+  </section>
+
+  <section class="sec" id="about">
+    <div class="wrap about">
+      <h2>About Hunar</h2>
+      <p>Hunar means “skill” in Urdu. We built it so that talented people can find fair work, and so that clients can hire them without guesswork.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div><a href="#home" class="brand light"><span class="mark">H</span>Hunar</a><p>Skilled freelancers, fairly paid.</p></div>
+    <div><h4>Platform</h4><a href="#freelancers">Find Freelancers</a><a href="#jobs">Find Jobs</a><a href="#how">How it works</a></div>
+    <div><h4>Company</h4><a href="#about">About</a><a href="#">Contact</a><a href="#">Privacy</a></div>
+  </div>
+  <p class="copy">© 2026 Hunar. Student project.</p>
+</footer>
+
+<div class="modal" id="modal" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <button class="x" id="close" aria-label="Close">×</button>
+    <h3 id="mTitle">Login</h3>
+    <form id="authForm" novalidate>
+      <label id="nameRow" hidden>Full name<input name="name" autocomplete="name"></label>
+      <label>Email<input name="email" type="email" autocomplete="email" required></label>
+      <label>Password<input name="pw" type="password" minlength="6" autocomplete="current-password" required></label>
+      <p class="err" id="err" role="alert"></p>
+      <button class="btn solid full" id="submitBtn">Login</button>
+    </form>
+    <p class="swap"><span id="swapText">New here?</span> <button id="swap">Create an account</button></p>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script src="main.js"></script>
+</body>
+</html>
